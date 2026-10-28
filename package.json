@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview-hash": "node scripts/preview-hash.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.105.0",

@@ -36,6 +36,21 @@ VITE_API_URL=https://api.example.com/v1 npm run build    # static files in dist/
 - Add the panel's origin to `CORS_ALLOWED_ORIGINS` in the API's `.env`.
 - Serve it over HTTPS, because browsers allow camera and microphone only on secure origins.
 
+## Coming soon gate (before launch)
+
+Before launch, `app.mindease.me` shows a "Coming soon" page, and only people with the preview password can open the panel. Set the password when you build:
+
+```bash
+npm run preview-hash -- "your-preview-password"     # prints a hash
+VITE_PREVIEW_PASSWORD_SHA256=<hash> VITE_API_URL=https://api.mindease.me/v1 npm run build
+```
+
+- Only the hash is in the built files, never the password itself.
+- Once a browser enters the right password, it's remembered on that device.
+- To change the password, build again with a new hash; everyone has to enter the new one.
+- To launch, build without `VITE_PREVIEW_PASSWORD_SHA256`.
+- This gate only hides the site. The data is still protected by the panel sign-in. For a hard lock, add Apache Basic Auth on the vhost.
+
 ## Structure
 
 ```

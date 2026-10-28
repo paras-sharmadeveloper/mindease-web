@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ApiError } from './api/client'
 import { AuthProvider } from './auth/AuthContext'
 import App from './App'
+import PreviewGate from './components/PreviewGate'
 import './index.css'
 
 const queryClient = new QueryClient({
@@ -20,9 +21,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <PreviewGate>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </PreviewGate>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>,
