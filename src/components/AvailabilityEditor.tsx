@@ -2,7 +2,8 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useAvailability, useBlockPeriod, useSaveWindows, useUnblockPeriod } from '../api/hooks'
 import type { AvailabilityWindow } from '../api/types'
 import { WEEKDAYS, fmtDateTime, fromLocalInput, toLocalInput } from '../lib/format'
-import { Button, Card, Empty, ErrorBanner, Field, Input, Spinner } from './ui'
+import { Cross, Plus } from './icons'
+import { Button, Card, Empty, ErrorBanner, Field, Input, Spinner, SuccessBanner } from './ui'
 
 const ORDER = [1, 2, 3, 4, 5, 6, 0] // Monday first
 
@@ -42,12 +43,12 @@ export default function AvailabilityEditor({ therapistId }: { therapistId: strin
       <Card
         title="Weekly hours"
         actions={<>
-          {dirty && <Button variant="ghost" className="sm" onClick={() => { setDirty(false); setWindows(availability.data!.windows) }}>Discard</Button>}
-          <Button className="sm" disabled={!dirty} loading={save.isPending} onClick={() => save.mutate(windows, { onSuccess: () => { setDirty(false); setSaved(true) } })}>Save hours</Button>
+          {dirty && <Button variant="secondary" size="sm" onClick={() => { setDirty(false); setWindows(availability.data!.windows) }}>Discard</Button>}
+          <Button size="sm" disabled={!dirty} loading={save.isPending} onClick={() => save.mutate(windows, { onSuccess: () => { setDirty(false); setSaved(true) } })}>Save hours</Button>
         </>}
       >
         <p className="muted small">Times are in <b>{tz}</b>. Clients can book {'50-minute'} sessions inside these hours. Existing bookings are not affected by changes.</p>
-        {saved && <div className="banner banner-ok">Hours saved. The app now offers the new slots.</div>}
+        {saved && <SuccessBanner>Hours saved. The app now offers the new slots.</SuccessBanner>}
         <ErrorBanner error={save.error} />
         {ORDER.map((day) => {
           const rows = byDay(day)
@@ -55,18 +56,18 @@ export default function AvailabilityEditor({ therapistId }: { therapistId: strin
             <div className="day-row" key={day}>
               <div className="day">{WEEKDAYS[day]}</div>
               <div className="windows">
-                {rows.length === 0 && <span className="muted" style={{ paddingTop: 9 }}>Unavailable</span>}
+                {rows.length === 0 && <span className="muted" style={{ paddingTop: 12 }}>Not available</span>}
                 {rows.map(({ w, i }) => (
                   <div className="window" key={i}>
                     <Input type="time" step={900} value={w.start} aria-label={`${WEEKDAYS[day]} start`} onChange={(e) => update(windows.map((x, j) => (j === i ? { ...x, start: e.target.value } : x)))} />
                     <span className="muted">to</span>
                     <Input type="time" step={900} value={w.end} aria-label={`${WEEKDAYS[day]} end`} onChange={(e) => update(windows.map((x, j) => (j === i ? { ...x, end: e.target.value } : x)))} />
-                    <button className="icon-btn" aria-label="Remove" onClick={() => update(windows.filter((_, j) => j !== i))}>✕</button>
+                    <button className="round-btn" aria-label="Remove" onClick={() => update(windows.filter((_, j) => j !== i))}><Cross size={14} /></button>
                   </div>
                 ))}
                 <div className="row" style={{ gap: 6 }}>
-                  <Button variant="ghost" className="sm" onClick={() => addWindow(day)}>+ Add hours</Button>
-                  {rows.length > 0 && day >= 1 && day <= 5 && <Button variant="ghost" className="sm" onClick={() => copyToWeekdays(day)}>Copy to Mon–Fri</Button>}
+                  <Button variant="secondary" size="sm" onClick={() => addWindow(day)}><Plus size={15} />Add hours</Button>
+                  {rows.length > 0 && day >= 1 && day <= 5 && <button className="link-btn" onClick={() => copyToWeekdays(day)}>Copy to Mon–Fri</button>}
                 </div>
               </div>
             </div>
@@ -104,7 +105,7 @@ function BlockedPeriods({ exceptions, block, unblock }: {
         <Field label="Until">{(id) => <Input id={id} type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} />}</Field>
         <div className="span-2 row" style={{ alignItems: 'flex-end' }}>
           <div style={{ flex: 1, minWidth: 200 }}><Field label="Reason (optional)">{(id) => <Input id={id} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Annual leave" />}</Field></div>
-          <div style={{ marginBottom: 14 }}><Button type="submit" variant="secondary" loading={block.isPending}>Block time</Button></div>
+          <div style={{ marginBottom: 16 }}><Button type="submit" variant="dark" loading={block.isPending}>Block time</Button></div>
         </div>
       </form>
       {exceptions.length === 0
@@ -115,7 +116,7 @@ function BlockedPeriods({ exceptions, block, unblock }: {
             <tbody>{exceptions.map((x) => (
               <tr key={x.id}>
                 <td>{fmtDateTime(x.startsAt)}</td><td>{fmtDateTime(x.endsAt)}</td><td className="muted">{x.reason ?? '—'}</td>
-                <td style={{ textAlign: 'right' }}><Button variant="ghost" className="sm" loading={unblock.isPending && unblock.variables === x.id} onClick={() => unblock.mutate(x.id)}>Remove</Button></td>
+                <td style={{ textAlign: 'right' }}><Button variant="secondary" size="sm" loading={unblock.isPending && unblock.variables === x.id} onClick={() => unblock.mutate(x.id)}>Remove</Button></td>
               </tr>
             ))}</tbody>
           </table></div>

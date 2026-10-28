@@ -3,7 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import ZoomVideo, { VideoQuality, type Participant, type VideoPlayer } from '@zoom/videosdk'
 import { ApiError } from '../api/client'
 import { fetchVideoToken, useBooking } from '../api/hooks'
-import { Button } from '../components/ui'
+import { ChevronLeft, Mic, MicOff, Phone, Video, VideoOff } from '../components/icons'
+import { BackButton, Button } from '../components/ui'
 import { fmtDate, fmtTime } from '../lib/format'
 
 type Client = ReturnType<typeof ZoomVideo.createClient>
@@ -151,7 +152,7 @@ export default function Call() {
   return (
     <div className="call">
       <div className="call-top">
-        <div><b>{title}</b><div className="muted small">{subtitle}</div></div>
+        <div className="who-call"><BackButton to="/sessions" label="Back to sessions" /><div><b>{title}</b><div className="muted small">{subtitle}</div></div></div>
         <div className="muted small">{inCall ? `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')} · ` : ''}End-to-end in the browser · not recorded</div>
       </div>
 
@@ -160,11 +161,11 @@ export default function Call() {
           <div className="tile remote" ref={remoteTile}>
             {!remote && inCall && <div className="placeholder"><span className="avatar">…</span>Waiting for {b?.client.name ?? 'the client'} to join from the app</div>}
             {remote && !remote.bVideoOn && <div className="placeholder"><span className="avatar">{remote.displayName?.slice(0, 1) ?? '?'}</span>{remote.displayName}'s camera is off</div>}
-            {remote && <span className="label">{remote.displayName}{remote.muted ? ' · muted' : ''}</span>}
+            {remote && <span className="label">{remote.muted && <MicOff size={14} />}{remote.displayName}</span>}
           </div>
           <div className="tile self" ref={selfTile}>
             {!camOn && <div className="placeholder small">Your camera is off</div>}
-            <span className="label">You{micOn ? '' : ' · muted'}</span>
+            <span className="label">{!micOn && <MicOff size={14} />}You</span>
           </div>
         </video-player-container>
 
@@ -177,17 +178,17 @@ export default function Call() {
           >
             <div className="row" style={{ justifyContent: 'center', marginTop: 16 }}>
               {phase !== 'ended' && <Button onClick={join}>Rejoin</Button>}
-              <Link className="btn btn-ghost" to="/sessions">Back to sessions</Link>
+              <Link className="btn btn-secondary btn-md" to="/sessions">Back to sessions</Link>
             </div>
           </Overlay>
         )}
       </div>
 
       <div className="call-bar">
-        <button className={`call-btn ${micOn ? '' : 'off'}`} onClick={toggleMic} disabled={!inCall} aria-label={micOn ? 'Mute' : 'Unmute'} title={micOn ? 'Mute' : 'Unmute'}>{micOn ? '🎙' : '🔇'}</button>
-        <button className={`call-btn ${camOn ? '' : 'off'}`} onClick={toggleCam} disabled={!inCall} aria-label={camOn ? 'Turn camera off' : 'Turn camera on'} title={camOn ? 'Camera off' : 'Camera on'}>{camOn ? '📹' : '🚫'}</button>
-        <button className="call-btn end" onClick={() => leave(false)} disabled={!inCall}>Leave</button>
-        <button className="call-btn end" style={{ background: '#7A231A' }} onClick={() => leave(true)} disabled={!inCall}>End for everyone</button>
+        <button className={`call-btn ${micOn ? '' : 'off'}`} onClick={toggleMic} disabled={!inCall} aria-label={micOn ? 'Mute' : 'Unmute'} title={micOn ? 'Mute' : 'Unmute'}>{micOn ? <Mic size={22} /> : <MicOff size={22} />}</button>
+        <button className={`call-btn ${camOn ? '' : 'off'}`} onClick={toggleCam} disabled={!inCall} aria-label={camOn ? 'Turn camera off' : 'Turn camera on'} title={camOn ? 'Camera off' : 'Camera on'}>{camOn ? <Video size={22} /> : <VideoOff size={22} />}</button>
+        <button className="call-btn end" onClick={() => leave(false)} disabled={!inCall}><Phone size={20} />Leave</button>
+        <button className="call-btn end dark" onClick={() => leave(true)} disabled={!inCall}>End for everyone</button>
       </div>
     </div>
   )
@@ -234,7 +235,7 @@ function PreJoin({ title, subtitle, micOn, camOn, setMicOn, setCamOn, error, onJ
 
   return (
     <div className="call">
-      <div className="call-top"><button className="btn btn-ghost sm" onClick={onBack}>← Back</button></div>
+      <div className="call-top"><button className="back" onClick={onBack} aria-label="Back to sessions"><ChevronLeft size={22} /></button></div>
       <div className="prejoin">
         <div className="preview">
           {permission === 'ok' && camOn
@@ -248,10 +249,10 @@ function PreJoin({ title, subtitle, micOn, camOn, setMicOn, setCamOn, error, onJ
           {permission === 'unavailable' && <div className="banner banner-error">We couldn't find a camera or microphone. You can still join and listen.</div>}
           {error && <div className="banner banner-error">{error}</div>}
           <div className="row" style={{ margin: '14px 0 18px' }}>
-            <button className={`call-btn ${micOn ? '' : 'off'}`} onClick={() => setMicOn(!micOn)} aria-label="Toggle microphone">{micOn ? '🎙' : '🔇'}</button>
-            <button className={`call-btn ${camOn ? '' : 'off'}`} onClick={() => setCamOn(!camOn)} aria-label="Toggle camera">{camOn ? '📹' : '🚫'}</button>
+            <button className={`call-btn ${micOn ? '' : 'off'}`} onClick={() => setMicOn(!micOn)} aria-label={micOn ? 'Join muted' : 'Join with microphone on'} aria-pressed={!micOn}>{micOn ? <Mic size={22} /> : <MicOff size={22} />}</button>
+            <button className={`call-btn ${camOn ? '' : 'off'}`} onClick={() => setCamOn(!camOn)} aria-label={camOn ? 'Join with camera off' : 'Join with camera on'} aria-pressed={!camOn}>{camOn ? <Video size={22} /> : <VideoOff size={22} />}</button>
           </div>
-          <Button onClick={onJoin} disabled={permission === 'checking'}>Join session</Button>
+          <Button size="lg" onClick={onJoin} disabled={permission === 'checking'}><Video size={20} />Join session</Button>
           <p className="small" style={{ color: '#B9ADA5', marginTop: 14 }}>You join as host. Sessions are not recorded.</p>
         </div>
       </div>

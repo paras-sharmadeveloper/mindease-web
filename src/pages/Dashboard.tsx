@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useBookings, useDashboard } from '../api/hooks'
 import { useMe } from '../auth/AuthContext'
+import { Calendar, Check, Clock, Cross, Users } from '../components/icons'
 import SessionList from '../components/SessionList'
-import { Card, ErrorBanner, PageHeader, Spinner } from '../components/ui'
+import { Card, ErrorBanner, Hero, Spinner } from '../components/ui'
 import { localZone } from '../lib/format'
 
 export default function Dashboard() {
@@ -15,34 +16,39 @@ export default function Dashboard() {
 
   return (
     <>
-      <PageHeader title={`${greeting}, ${firstName(me.user.name)}`} subtitle={`Times are shown in your timezone (${localZone}).`} />
+      <Hero eyebrow={isAdmin ? 'Admin' : 'Therapist'} title={`${greeting}, ${firstName(me.user.name)}`} subtitle={<>Times are shown in your timezone ({localZone.replace('_', ' ')}).</>} />
 
-      {me.therapist && !me.therapist.active && <div className="banner banner-info">Your profile is hidden from the app. Ask an admin to activate it.</div>}
-
-      <ErrorBanner error={stats.error} />
-      {stats.data && (
-        <div className="stats">
-          <div className="stat accent"><b>{stats.data.next7Days}</b><span>Sessions in the next 7 days</span></div>
-          <div className="stat"><b>{stats.data.upcoming}</b><span>Upcoming sessions</span></div>
-          <div className="stat"><b>{stats.data.completedLast30Days}</b><span>Completed (30 days)</span></div>
-          {isAdmin
-            ? <div className="stat"><b>{stats.data.activeTherapists}</b><span>Active therapists</span></div>
-            : <div className="stat"><b>{stats.data.cancelledLast30Days}</b><span>Cancelled (30 days)</span></div>}
-        </div>
-      )}
-
-      <Card title="Next sessions" actions={<Link className="btn btn-ghost sm" to="/sessions">View all</Link>}>
-        {upcoming.isLoading ? <Spinner /> : <ErrorBanner error={upcoming.error} />}
-        {upcoming.data && (
-          <SessionList
-            bookings={upcoming.data.slice(0, 5)}
-            showTherapist={isAdmin}
-            emptyText={isAdmin ? 'No confirmed sessions are coming up.' : 'When clients book you in the app, their sessions appear here.'}
-          />
+      <div className="page-body">
+        {me.therapist && !me.therapist.active && <div className="banner banner-info">Your profile is hidden from the app. Ask an admin to show it.</div>}
+        <ErrorBanner error={stats.error} />
+        {stats.data && (
+          <div className="stats">
+            <Stat icon={<Calendar />} tone="red" value={stats.data.next7Days} label="Sessions in the next 7 days" />
+            <Stat icon={<Clock />} tone="yellow" value={stats.data.upcoming} label="Upcoming sessions" />
+            <Stat icon={<Check />} tone="green" value={stats.data.completedLast30Days} label="Completed in 30 days" />
+            {isAdmin
+              ? <Stat icon={<Users />} tone="purple" value={stats.data.activeTherapists ?? 0} label="Therapists in the app" />
+              : <Stat icon={<Cross />} tone="purple" value={stats.data.cancelledLast30Days} label="Cancelled in 30 days" />}
+          </div>
         )}
-      </Card>
+
+        <Card title="Up next" actions={<Link className="btn btn-secondary btn-sm" to="/sessions">See all sessions</Link>}>
+          {upcoming.isLoading ? <Spinner /> : <ErrorBanner error={upcoming.error} />}
+          {upcoming.data && (
+            <SessionList
+              bookings={upcoming.data.slice(0, 5)}
+              showTherapist={isAdmin}
+              emptyText={isAdmin ? 'No confirmed sessions are coming up.' : 'When clients book you in the app, their sessions show up here.'}
+            />
+          )}
+        </Card>
+      </div>
     </>
   )
+}
+
+function Stat({ icon, tone, value, label }: { icon: React.ReactNode; tone: string; value: number; label: string }) {
+  return <div className="stat"><span className={`stat-icon tone-${tone}`}>{icon}</span><b>{value}</b><span>{label}</span></div>
 }
 
 /** "Dr Sam Lee" -> "Sam" */

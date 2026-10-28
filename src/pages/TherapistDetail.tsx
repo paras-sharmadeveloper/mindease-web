@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { useTherapist, useUpdateTherapist } from '../api/hooks'
 import { useAuth, useMe } from '../auth/AuthContext'
 import AvailabilityEditor from '../components/AvailabilityEditor'
+import { Lock } from '../components/icons'
 import TherapistForm from '../components/TherapistForm'
-import { Button, Card, ErrorBanner, Field, Input, Modal, PageHeader, Spinner, fieldError } from '../components/ui'
+import { ActivePill, Button, Card, ErrorBanner, Field, Hero, Modal, PasswordInput, PasswordRules, Spinner, SuccessBanner, fieldError } from '../components/ui'
 import { fmtMoney } from '../lib/format'
 
 export default function TherapistDetail() {
@@ -24,17 +25,18 @@ export default function TherapistDetail() {
 
   return (
     <>
-      {isAdmin && <Link to="/therapists" className="muted small" style={{ textDecoration: 'none', fontWeight: 700 }}>← All therapists</Link>}
-      <PageHeader
+      <Hero
+        back={isAdmin ? '/therapists' : undefined}
+        eyebrow={isAdmin ? 'Therapist' : 'Your profile'}
         title={t.name}
-        subtitle={<>{t.email} · {fmtMoney(t.priceCents, t.currency)} per {t.sessionMinutes}-minute session · <span className={`status status-${t.active ? 'active' : 'inactive'}`}>{t.active ? 'Shown in app' : 'Hidden from app'}</span></>}
-        actions={isAdmin && <Button variant="ghost" onClick={() => { update.reset(); setResetOpen(true) }}>Set new password</Button>}
+        subtitle={<><span>{t.email}</span><span>·</span><span>{fmtMoney(t.priceCents, t.currency)} per {t.sessionMinutes}-minute session</span><ActivePill active={t.active} /></>}
+        actions={isAdmin && <Button variant="secondary" onClick={() => { update.reset(); setResetOpen(true) }}><Lock size={17} />Set new password</Button>}
       />
-      {params.get('new') && <div className="banner banner-ok">Therapist created. Add their weekly hours below so clients can book them, then share the sign-in details with them.</div>}
+      <div className="page-body">
+        {params.get('new') && <SuccessBanner>Therapist created. Add their weekly hours below so clients can book them, then share the sign-in details with them.</SuccessBanner>}
 
-      <div className="grid">
         <Card title="Profile">
-          {savedAt && <div className="banner banner-ok">Profile saved.</div>}
+          {savedAt && <SuccessBanner>Profile saved.</SuccessBanner>}
           <TherapistForm
             key={t.id + (savedAt ?? '')}
             initial={t}
@@ -60,15 +62,17 @@ function ResetPassword({ open, name, onClose, update }: { open: boolean; name: s
   return (
     <Modal open={open} title="Set a new password" onClose={close}
       footer={done
-        ? <Button onClick={close}>Done</Button>
-        : <><Button variant="ghost" onClick={close}>Cancel</Button><Button loading={update.isPending} disabled={password.length < 8} onClick={() => update.mutate({ password }, { onSuccess: () => setDone(true) })}>Set password</Button></>}
+        ? <Button size="lg" onClick={close}>Done</Button>
+        : <><Button variant="secondary" size="lg" onClick={close}>Cancel</Button><Button size="lg" loading={update.isPending} disabled={password.length < 8} onClick={() => update.mutate({ password }, { onSuccess: () => setDone(true) })}>Set password</Button></>}
     >
       {done
-        ? <div className="banner banner-ok">Password updated and {name} was signed out everywhere. Share the new password with them securely.</div>
+        ? <SuccessBanner>Password updated and {name} was signed out everywhere. Share the new password with them securely.</SuccessBanner>
         : <>
           <p className="muted">{name} will be signed out on every device and must use this temporary password next time.</p>
           <ErrorBanner error={update.error && !fieldError(update.error, 'password') ? update.error : null} />
-          <Field label="Temporary password" error={fieldError(update.error, 'password')} hint="At least 8 characters.">{(id) => <Input id={id} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />}</Field>
+          <Field label="Temporary password" error={fieldError(update.error, 'password')}>
+            {(id) => <><PasswordInput id={id} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="At least 8 characters" /><PasswordRules password={password} /></>}
+          </Field>
         </>}
     </Modal>
   )
