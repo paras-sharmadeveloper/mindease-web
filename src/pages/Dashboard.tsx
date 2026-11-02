@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useBookings, useDashboard } from '../api/hooks'
 import { useMe } from '../auth/AuthContext'
-import { Calendar, Check, Clock, Cross, Users } from '../components/icons'
+import { Calendar, Check, Clock, Cross, Plus, Users } from '../components/icons'
 import SessionList from '../components/SessionList'
 import { Card, ErrorBanner, Hero, Spinner } from '../components/ui'
 import { localZone } from '../lib/format'
@@ -29,6 +29,14 @@ export default function Dashboard() {
             {isAdmin
               ? <Stat icon={<Users />} tone="purple" value={stats.data.activeTherapists ?? 0} label="Therapists in the app" />
               : <Stat icon={<Cross />} tone="purple" value={stats.data.cancelledLast30Days} label="Cancelled in 30 days" />}
+          </div>
+        )}
+        {stats.data && isAdmin && (
+          <div className="stats">
+            <Stat icon={<Users />} tone="green" value={stats.data.totalUsers ?? 0} label="Total app sign-ups" />
+            <Stat icon={<Plus />} tone="red" value={stats.data.newUsersLast24Hours ?? 0} label="New in 24 hours" />
+            <Stat icon={<Plus />} tone="yellow" value={stats.data.newUsersLast7Days ?? 0} label="New in 7 days" />
+            <Stat icon={<Plus />} tone="purple" value={stats.data.newUsersLast30Days ?? 0} label="New in 30 days" />
           </div>
         )}
 

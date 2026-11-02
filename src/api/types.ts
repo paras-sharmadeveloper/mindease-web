@@ -76,6 +76,10 @@ export interface Dashboard {
   completedLast30Days: number
   cancelledLast30Days: number
   activeTherapists: number | null
+  totalUsers: number | null
+  newUsersLast24Hours: number | null
+  newUsersLast7Days: number | null
+  newUsersLast30Days: number | null
 }
 
 export interface VideoToken {
