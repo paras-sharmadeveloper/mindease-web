@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { del, get, patch, post, put } from './client'
-import type { Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
+import type { EmailStatus, Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
 
 export type BookingScope = 'upcoming' | 'past' | 'all'
 
@@ -139,5 +139,18 @@ export function useSaveQuestionnaire() {
   return useMutation({
     mutationFn: (questions: Question[]) => put<Questionnaire>('/panel/questionnaire', { questions }),
     onSuccess: (data) => qc.setQueryData(['questionnaire'], data),
+  })
+}
+
+// ---- Email delivery check (admin) ----
+
+export const useEmailStatus = (enabled: boolean) =>
+  useQuery({ queryKey: ['email-status'], queryFn: () => get<EmailStatus>('/panel/email'), enabled })
+
+export function useSendTestEmail() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: (to: string) => post<{ sent: true; to: string }>('/panel/email/test', { to }),
+    onSettled: () => invalidate('email-status'),
   })
 }

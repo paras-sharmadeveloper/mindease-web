@@ -146,3 +146,24 @@ export interface Questionnaire {
   updatedAt: string | null
   [key: string]: unknown
 }
+
+export interface EmailStatus {
+  settings: {
+    mailer: string
+    host: string | null
+    port: number | null
+    encryption: string | null
+    username: string | null
+    fromAddress: string | null
+    fromName: string | null
+    sendsEmail: boolean
+  }
+  queue: {
+    connection: string
+    waiting: number | null
+    oldestWaitingAt: string | null
+    failed: number | null
+    lastFailedAt: string | null
+    lastError: string | null
+  }
+}

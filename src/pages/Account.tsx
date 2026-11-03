@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useChangePassword } from '../api/hooks'
 import { useMe } from '../auth/AuthContext'
+import EmailDelivery from '../components/EmailDelivery'
 import { Button, Card, ErrorBanner, Field, Hero, PasswordInput, PasswordRules, SuccessBanner, fieldError } from '../components/ui'
 
 export default function Account() {
@@ -32,6 +33,7 @@ export default function Account() {
             <Button type="submit" size="lg" loading={change.isPending} disabled={!valid} style={{ marginTop: 18 }}>Change password</Button>
           </form>
         </Card>
+        {me.role === 'admin' && <EmailDelivery defaultTo={me.user.email} />}
       </div>
     </>
   )
