@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth, useMe } from '../auth/AuthContext'
-import { Calendar, Edit, Home, LogOut, Menu, Settings, Users } from './icons'
+import { Book, Calendar, Edit, Home, ListChecks, LogOut, Menu, Settings, Users } from './icons'
 
 export default function Layout() {
   const me = useMe()
@@ -12,7 +12,11 @@ export default function Layout() {
   const links = [
     { to: '/', label: 'Home', icon: <Home />, end: true },
     { to: '/sessions', label: 'Sessions', icon: <Calendar /> },
-    ...(isAdmin ? [{ to: '/therapists', label: 'Therapists', icon: <Users /> }] : []),
+    ...(isAdmin ? [
+      { to: '/therapists', label: 'Therapists', icon: <Users /> },
+      { to: '/programs', label: 'Programs', icon: <Book /> },
+      { to: '/questionnaire', label: 'Questionnaire', icon: <ListChecks /> },
+    ] : []),
     ...(me.therapist ? [{ to: `/therapists/${me.therapist.id}`, label: 'Profile & hours', icon: <Edit /> }] : []),
     { to: '/account', label: 'Account', icon: <Settings /> },
   ]

@@ -30,5 +30,10 @@ export const VideoOff = (p: P) => <Svg {...p}><path d="M3 3l18 18M16 16v-1.5M16 
 export const Mic = (p: P) => <Svg {...p}><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21" /></Svg>
 export const MicOff = (p: P) => <Svg {...p}><path d="M3 3l18 18M9 9v2a3 3 0 005 2.2M15 9.5V6a3 3 0 00-5.8-1M18.5 11a6.5 6.5 0 01-1 3.4M5.5 11a6.5 6.5 0 009.8 5.6M12 17.5V21" /></Svg>
 export const Phone = (p: P) => <Svg {...p}><path d="M4 15.5c4.5-4 11.5-4 16 0l-1.8 2.3a1.5 1.5 0 01-1.9.4l-2.1-1.1a1.5 1.5 0 01-.8-1.4v-1.4a12 12 0 00-2.8 0v1.4a1.5 1.5 0 01-.8 1.4l-2.1 1.1a1.5 1.5 0 01-1.9-.4z" /></Svg>
+export const Book = (p: P) => <Svg {...p}><path d="M4 5.5A1.5 1.5 0 015.5 4H11v16H5.5A1.5 1.5 0 014 18.5zM20 5.5A1.5 1.5 0 0018.5 4H13v16h5.5a1.5 1.5 0 001.5-1.5z" /></Svg>
+export const ListChecks = (p: P) => <Svg {...p}><path d="M4 6.5l1.5 1.5L8 5.5M4 12.5l1.5 1.5L8 11.5M4 18.5l1.5 1.5L8 17.5M11 7h9M11 13h9M11 19h9" /></Svg>
+export const ArrowUp = (p: P) => <Svg {...p}><path d="M12 19V5M6 11l6-6 6 6" /></Svg>
+export const ArrowDown = (p: P) => <Svg {...p}><path d="M12 5v14M6 13l6 6 6-6" /></Svg>
+export const Trash = (p: P) => <Svg {...p}><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5M14 11v5" /></Svg>
 export const Search = (p: P) => <Svg {...p}><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></Svg>
 export const Ban = (p: P) => <Svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="M6 6l12 12" /></Svg>

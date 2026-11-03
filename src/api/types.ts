@@ -90,3 +90,59 @@ export interface VideoToken {
   expiresAt: string
   displayName: string
 }
+
+export type ProgramStatus = 'active' | 'coming_soon' | 'hidden'
+
+/** Admin view of a program. `content` (the full JSON the app receives) is only on the detail endpoint. */
+export interface ProgramSummary {
+  id: string
+  title: string
+  short: string | null
+  status: ProgramStatus
+  displayOrder: number
+  coverImage: string | null
+  contentVersion: string | null
+  counts: { phases: number; lessons: number; videos: number; quizzes: number }
+  updatedAt: string | null
+}
+
+export interface ProgramDetail extends ProgramSummary {
+  content: ProgramContent
+}
+
+/** Only the parts of the app's program JSON the panel reads. Everything else is kept as is. */
+export interface ProgramContent {
+  id: string
+  title: string
+  phases: {
+    id: string
+    number?: number
+    title: string
+    description?: string
+    lessons?: { id: string; title: string; minutes?: number }[]
+    videos?: { id: string; title: string; duration: number; mediaUrl?: string | null }[]
+    activity?: { id: string; title: string; prompts?: { id: string; q: string }[] } | null
+    quiz?: { id: string; passThreshold?: number | null; questions: { id: string; q: string; options: string[]; answer: number }[] } | null
+  }[]
+  [key: string]: unknown
+}
+
+export type QuestionType = 'single' | 'multi' | 'mood'
+
+export interface QuestionOption { v: string; label: string; [key: string]: unknown }
+
+export interface Question {
+  id: string
+  type: QuestionType
+  q: string
+  options: QuestionOption[]
+  exclusive?: string | null
+  [key: string]: unknown
+}
+
+export interface Questionnaire {
+  version?: string
+  questions: Question[]
+  updatedAt: string | null
+  [key: string]: unknown
+}

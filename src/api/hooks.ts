@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { del, get, patch, post, put } from './client'
-import type { Availability, AvailabilityWindow, Booking, Dashboard, Therapist, VideoToken } from './types'
+import type { Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
 
 export type BookingScope = 'upcoming' | 'past' | 'all'
 
@@ -93,3 +93,51 @@ export const useChangePassword = () =>
   useMutation({ mutationFn: (input: { currentPassword: string; password: string }) => put<null>('/panel/me/password', input) })
 
 export const fetchVideoToken = (bookingId: string) => post<VideoToken>(`/panel/bookings/${bookingId}/video-token`)
+
+// ---- Programs and questionnaire (admin). Saves are live in the app straight away. ----
+
+export const usePrograms = () => useQuery({ queryKey: ['programs'], queryFn: () => get<ProgramSummary[]>('/panel/programs') })
+
+export const useProgram = (id: string) => useQuery({ queryKey: ['program', id], queryFn: () => get<ProgramDetail>(`/panel/programs/${id}`) })
+
+export interface ProgramDetailsInput {
+  title?: string
+  short?: string | null
+  status?: ProgramStatus
+  displayOrder?: number
+  coverImage?: string | null
+}
+
+export function useUpdateProgram(id: string) {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: (input: ProgramDetailsInput) => patch<ProgramSummary>(`/panel/programs/${id}`, input),
+    onSuccess: () => invalidate('programs', 'program'),
+  })
+}
+
+export function useReplaceProgramContent(id: string) {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: (content: ProgramContent) => put<ProgramDetail>(`/panel/programs/${id}/content`, { content }),
+    onSuccess: () => invalidate('programs', 'program'),
+  })
+}
+
+export function useCreateProgram() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: (content: ProgramContent) => post<ProgramDetail>('/panel/programs', { content }),
+    onSuccess: () => invalidate('programs'),
+  })
+}
+
+export const useQuestionnaire = () => useQuery({ queryKey: ['questionnaire'], queryFn: () => get<Questionnaire>('/panel/questionnaire') })
+
+export function useSaveQuestionnaire() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (questions: Question[]) => put<Questionnaire>('/panel/questionnaire', { questions }),
+    onSuccess: (data) => qc.setQueryData(['questionnaire'], data),
+  })
+}

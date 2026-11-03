@@ -4,10 +4,12 @@ React panel for MindEase **therapists** and **admins**. It talks to the Laravel 
 
 | Role | Can do |
 |---|---|
-| Admin | Add therapists (with a temporary password), edit any profile, set prices, show or hide therapists in the app, reset passwords, see all sessions, cancel sessions |
+| Admin | Add therapists (with a temporary password), edit any profile, set prices, show or hide therapists in the app, reset passwords, see all sessions, cancel sessions, manage programs (show/hide, details, content JSON, add) and edit the onboarding questionnaire |
 | Therapist | Edit own profile, set weekly hours and time off, see own sessions and client notes, join video calls (Zoom Video SDK, host), mark sessions completed or no-show, cancel sessions (full refund) |
 
 Admins can't join calls or read client notes.
+
+API reference for the panel: `/docs/panel` on the API (separate from the mobile app's `/docs/api`).
 
 ## Run locally
 
@@ -57,7 +59,7 @@ VITE_PREVIEW_PASSWORD_SHA256=<hash> VITE_API_URL=https://api.mindease.me/v1 npm 
 src/api/client.ts       fetch wrapper: bearer token, single-flight refresh, ApiError
 src/api/hooks.ts        React Query hooks for every panel endpoint
 src/auth/AuthContext    sign in -> /panel/me (app users are rejected), session restore
-src/pages/              Dashboard, Sessions, Therapists, TherapistDetail, Account, Call
+src/pages/              Dashboard, Sessions, Therapists, TherapistDetail, Programs, ProgramDetail, Questionnaire, Account, Call
 src/components/         Layout, SessionList, TherapistForm, AvailabilityEditor, ui
 ```
 
