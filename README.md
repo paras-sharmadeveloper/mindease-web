@@ -38,6 +38,25 @@ VITE_API_URL=https://api.example.com/v1 npm run build    # static files in dist/
 - Add the panel's origin to `CORS_ALLOWED_ORIGINS` in the API's `.env`.
 - Serve it over HTTPS, because browsers allow camera and microphone only on secure origins.
 
+## Update the live panel from git
+
+The server builds the panel from this repo with `deploy/update.sh` (git pull → npm ci → build → copy `dist/` to the DocumentRoot, keeping `.htaccess`).
+
+One-time setup on the server (as root):
+
+```bash
+apt install -y nodejs npm     # Node 20+
+git clone https://github.com/paras-sharmadeveloper/mindease-web.git /opt/mindease-web
+```
+
+Every update (after pushing to `main`, and after the API is deployed):
+
+```bash
+ssh root@147.93.102.64 'PANEL_DIR=/var/www/<panel docroot> bash /opt/mindease-web/deploy/update.sh'
+```
+
+Find the docroot with `grep -rhi -A8 "app.mindease.me" /etc/apache2/sites-enabled | grep -i DocumentRoot`.
+
 ## Coming soon gate (before launch)
 
 Before launch, `app.mindease.me` shows a "Coming soon" page, and only people with the preview password can open the panel. Set the password when you build:
