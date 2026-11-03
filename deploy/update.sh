@@ -11,7 +11,7 @@
 set -euo pipefail
 
 SRC_DIR="${SRC_DIR:-/opt/mindease-web}"
-PANEL_DIR="${PANEL_DIR:?Set PANEL_DIR to the panel's Apache DocumentRoot}"
+PANEL_DIR="${PANEL_DIR:?Set PANEL_DIR to the Apache DocumentRoot of the panel}"
 API_URL="${VITE_API_URL:-https://api.mindease.me/v1}"
 
 cd "$SRC_DIR"
