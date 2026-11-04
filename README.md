@@ -26,7 +26,7 @@ Vite proxies `/v1` to `localhost:8000` (override with `API_PROXY_TARGET`).
 
 Demo logins (local seed): `admin@mindease.test` / `password123`, `therapist@mindease.test` / `password123`.
 
-Video calls need `ZOOM_SDK_KEY` and `ZOOM_SDK_SECRET` in the API's `.env`. Without them, Join shows "Video sessions aren't available right now".
+Video calls need `ZOOM_VIDEO_SDK_KEY` and `ZOOM_VIDEO_SDK_SECRET` (a Zoom **Video SDK** app, not a Meeting SDK or OAuth app) in the API's `.env`. Without them, Join shows "Video sessions aren't available right now".
 
 ## Build and deploy
 
