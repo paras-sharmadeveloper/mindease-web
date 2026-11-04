@@ -26,7 +26,7 @@ export default function Login() {
     <div className="auth">
       <div className="auth-hero">
         <span className="blob b1" aria-hidden /><span className="blob b2" aria-hidden />
-        <div className="auth-brand"><span className="logo">M</span>MindEase</div>
+        <div className="auth-brand"><span className="logo"><img src="/logo.png" alt="" /></span>MindEase</div>
         <div className="auth-copy">
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,.8)', marginBottom: 10 }}>Therapist &amp; admin panel</div>
           <h1>Care for your clients, all in one place</h1>

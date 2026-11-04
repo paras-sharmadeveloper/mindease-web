@@ -47,7 +47,7 @@ function ComingSoon({ onUnlock }: { onUnlock: () => void }) {
     <div className="auth">
       <div className="auth-hero">
         <span className="blob b1" aria-hidden /><span className="blob b2" aria-hidden />
-        <div className="auth-brand"><span className="logo">M</span>MindEase</div>
+        <div className="auth-brand"><span className="logo"><img src="/logo.png" alt="" /></span>MindEase</div>
         <div className="auth-copy">
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,.8)', marginBottom: 10 }}>Coming soon</div>
           <h1>Something calm is on its way</h1>

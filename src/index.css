@@ -33,7 +33,8 @@ button { font-family: inherit; }
 .brand { display: flex; gap: 12px; align-items: center; padding: 2px 6px 26px; }
 .brand b { display: block; color: var(--brown); font-size: 18px; letter-spacing: -.4px; }
 .brand small { color: var(--grey60); font-size: 13px; font-weight: 600; }
-.logo { width: 42px; height: 42px; border-radius: 14px; background: var(--red); color: var(--white); display: grid; place-items: center; font-weight: 800; font-size: 19px; flex: none; }
+.logo { width: 42px; height: 42px; display: grid; place-items: center; flex: none; }
+.logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .sidebar nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .sidebar nav a { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 0 14px; border-radius: var(--pill); color: var(--brown); text-decoration: none; font-size: 15px; font-weight: 800; }
 .sidebar nav a:hover { background: var(--cream); }
@@ -223,7 +224,7 @@ td .sub { display: block; color: var(--grey60); font-size: 13px; }
 .auth-hero .blob.b1 { width: 520px; height: 520px; right: -180px; top: -200px; }
 .auth-hero .blob.b2 { width: 380px; height: 380px; left: -140px; bottom: -160px; right: auto; }
 .auth-brand { position: relative; display: flex; gap: 12px; align-items: center; font-weight: 800; font-size: 20px; }
-.auth-brand .logo { background: var(--white); color: var(--red); }
+.auth-brand .logo { background: var(--white); border-radius: 14px; padding: 5px; } /* white tile so the colours stay clear on red */
 .auth-copy { position: relative; max-width: 460px; }
 .auth-copy h1 { color: var(--white); font-size: 44px; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 14px; }
 .auth-copy p { color: rgba(255, 255, 255, .88); font-size: 17px; }
@@ -343,3 +344,6 @@ td .sub { display: block; color: var(--grey60); font-size: 13px; }
   .kv { grid-template-columns: 1fr; gap: 4px; }
   .kv dd { margin-bottom: 10px; }
 }
+
+/* Small logo on the red mobile top bar: white tile keeps the colours clear */
+.logo-sm { width: 34px; height: 34px; background: var(--white); border-radius: 11px; padding: 4px; }

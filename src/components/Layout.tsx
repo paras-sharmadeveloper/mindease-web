@@ -24,7 +24,7 @@ export default function Layout() {
   return (
     <div className="shell">
       <aside className={`sidebar ${open ? 'open' : ''}`}>
-        <div className="brand"><span className="logo">M</span><div><b>MindEase</b><small>{isAdmin ? 'Admin panel' : 'Therapist panel'}</small></div></div>
+        <div className="brand"><span className="logo"><img src="/logo.png" alt="" /></span><div><b>MindEase</b><small>{isAdmin ? 'Admin panel' : 'Therapist panel'}</small></div></div>
         <nav onClick={() => setOpen(false)} aria-label="Main">
           {links.map((l) => <NavLink key={l.to} to={l.to} end={l.end}>{l.icon}{l.label}</NavLink>)}
         </nav>
@@ -37,7 +37,7 @@ export default function Layout() {
       <div className="content">
         <header className="topbar">
           <button className="round-btn" onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
-          <span className="topbar-title">MindEase</span>
+          <span className="logo logo-sm"><img src="/logo.png" alt="" /></span><span className="topbar-title">MindEase</span>
         </header>
         <main className="main"><Outlet /></main>
       </div>
