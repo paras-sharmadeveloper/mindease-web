@@ -12,7 +12,8 @@ export interface Therapist {
   name: string
   email: string
   bio: string | null
-  specialties: string[]
+  /** `[{ key, label }]` (older API versions sent plain keys; use `specialtyKeys`). */
+  specialties: (FocusArea | string)[]
   photoUrl: string | null
   timezone: string
   priceCents: number
@@ -176,3 +177,7 @@ export interface FocusArea {
   key: string
   label: string
 }
+
+/** Specialty keys, whichever shape the API sent. */
+export const specialtyKeys = (list: (FocusArea | string)[] | null | undefined): string[] =>
+  (list ?? []).map((s) => (typeof s === 'string' ? s : s.key))

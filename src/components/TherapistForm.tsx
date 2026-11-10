@@ -1,7 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { ApiError } from '../api/client'
 import { useFocusAreas, type TherapistInput } from '../api/hooks'
-import type { Therapist } from '../api/types'
+import { specialtyKeys, type Therapist } from '../api/types'
 import { Button, Checkbox, ErrorBanner, Field, Input, PasswordInput, PasswordRules, Select, Textarea, fieldError } from './ui'
 
 const AU_ZONES = ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Brisbane', 'Australia/Adelaide', 'Australia/Darwin', 'Australia/Perth', 'Australia/Hobart']
@@ -24,7 +24,7 @@ export default function TherapistForm({ initial, mode, onSubmit, pending, error,
   const [email, setEmail] = useState(initial?.email ?? '')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState(initial?.bio ?? '')
-  const [specialties, setSpecialties] = useState<string[]>(initial?.specialties ?? [])
+  const [specialties, setSpecialties] = useState<string[]>(specialtyKeys(initial?.specialties))
   const focusAreas = useFocusAreas()
   const [photoUrl, setPhotoUrl] = useState(initial?.photoUrl ?? '')
   const [timezone, setTimezone] = useState(initial?.timezone ?? 'Australia/Sydney')

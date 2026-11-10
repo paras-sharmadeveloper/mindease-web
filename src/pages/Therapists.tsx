@@ -4,6 +4,7 @@ import { useCreateTherapist, useFocusAreas, useTherapists } from '../api/hooks'
 import { Plus } from '../components/icons'
 import TherapistForm from '../components/TherapistForm'
 import { ActivePill, Button, Card, Empty, ErrorBanner, Hero, Input, Modal, Spinner } from '../components/ui'
+import { specialtyKeys } from '../api/types'
 import { fmtMoney } from '../lib/format'
 
 export default function Therapists() {
@@ -15,7 +16,7 @@ export default function Therapists() {
 
   const focusAreas = useFocusAreas()
   const labels = Object.fromEntries((focusAreas.data ?? []).map((a) => [a.key, a.label]))
-  const list = (therapists.data ?? []).filter((t) => `${t.name} ${t.email} ${t.specialties.map((s) => labels[s] ?? s).join(' ')}`.toLowerCase().includes(query.toLowerCase()))
+  const list = (therapists.data ?? []).filter((t) => `${t.name} ${t.email} ${specialtyKeys(t.specialties).map((s) => labels[s] ?? s).join(' ')}`.toLowerCase().includes(query.toLowerCase()))
 
   return (
     <>
@@ -41,7 +42,7 @@ export default function Therapists() {
                   {list.map((t) => (
                     <tr key={t.id} className="clickable" onClick={() => navigate(`/therapists/${t.id}`)}>
                       <td><div className="person"><span className="avatar">{t.name.replace(/^dr\.?\s+/i, '').slice(0, 1)}</span><div><b>{t.name}</b><span className="sub">{t.email}</span></div></div></td>
-                      <td><div className="chips">{t.specialties.length ? t.specialties.map((s) => <span className="chip" key={s}>{labels[s] ?? s}</span>) : <span className="muted">—</span>}</div></td>
+                      <td><div className="chips">{t.specialties.length ? specialtyKeys(t.specialties).map((s) => <span className="chip" key={s}>{labels[s] ?? s}</span>) : <span className="muted">—</span>}</div></td>
                       <td className="muted">{t.timezone.replace('Australia/', '')}</td>
                       <td><b>{fmtMoney(t.priceCents, t.currency)}</b>{!t.customPrice && <span className="sub">default</span>}</td>
                       <td><ActivePill active={t.active} /></td>
