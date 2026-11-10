@@ -1,5 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
-import type { TherapistInput } from '../api/hooks'
+import { ApiError } from '../api/client'
+import { useFocusAreas, type TherapistInput } from '../api/hooks'
 import type { Therapist } from '../api/types'
 import { Button, Checkbox, ErrorBanner, Field, Input, PasswordInput, PasswordRules, Select, Textarea, fieldError } from './ui'
 
@@ -23,7 +24,8 @@ export default function TherapistForm({ initial, mode, onSubmit, pending, error,
   const [email, setEmail] = useState(initial?.email ?? '')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState(initial?.bio ?? '')
-  const [specialties, setSpecialties] = useState((initial?.specialties ?? []).join(', '))
+  const [specialties, setSpecialties] = useState<string[]>(initial?.specialties ?? [])
+  const focusAreas = useFocusAreas()
   const [photoUrl, setPhotoUrl] = useState(initial?.photoUrl ?? '')
   const [timezone, setTimezone] = useState(initial?.timezone ?? 'Australia/Sydney')
   const [customPrice, setCustomPrice] = useState(initial?.customPrice ?? false)
@@ -32,13 +34,16 @@ export default function TherapistForm({ initial, mode, onSubmit, pending, error,
 
   const zones = AU_ZONES.includes(timezone) ? AU_ZONES : [...AU_ZONES, timezone]
   const err = (f: string) => fieldError(error, f)
+  // Errors arrive per item, e.g. "specialties.0".
+  const specialtiesError = err('specialties')
+    ?? (error instanceof ApiError ? Object.entries(error.fields).find(([k]) => k.startsWith('specialties.'))?.[1]?.[0] ?? null : null)
   const canSubmit = mode !== 'create' || (name.trim() && email.trim() && password.length >= 8)
 
   function submit(e: FormEvent) {
     e.preventDefault()
     const input: TherapistInput = {
       bio: bio.trim() || null,
-      specialties: specialties.split(',').map((s) => s.trim()).filter(Boolean),
+      specialties,
       photoUrl: photoUrl.trim() || null,
       timezone,
     }
@@ -49,7 +54,7 @@ export default function TherapistForm({ initial, mode, onSubmit, pending, error,
 
   return (
     <form onSubmit={submit} noValidate>
-      <ErrorBanner error={error && !FIELDS.some((f) => err(f)) ? error : null} />
+      <ErrorBanner error={error && !FIELDS.some((f) => err(f)) && !specialtiesError ? error : null} />
       <div className="form-grid">
         {admin && <Field label="Full name" error={err('name')}>{(id) => <Input id={id} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dr Jo Park" required autoFocus={mode === 'create'} />}</Field>}
         {admin && <Field label="Email (used to sign in)" error={err('email')}>{(id) => <Input id={id} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jo@example.com" required />}</Field>}
@@ -66,7 +71,25 @@ export default function TherapistForm({ initial, mode, onSubmit, pending, error,
         <div className="span-2">
           <Field label="Bio" error={err('bio')} hint="Shown to clients in the app.">{(id) => <Textarea id={id} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Registered psychologist with 10 years' experience in…" />}</Field>
         </div>
-        <Field label="Specialties" error={err('specialties')} hint="Separate with commas, e.g. anxiety, stress, grief">{(id) => <Input id={id} value={specialties} onChange={(e) => setSpecialties(e.target.value)} placeholder="anxiety, stress" />}</Field>
+        <div className="span-2">
+          <div className="field">
+            <label id="specialties-label">Specialties</label>
+            <div className="chips-row" role="group" aria-labelledby="specialties-label" style={{ marginTop: 8 }}>
+              {(focusAreas.data ?? []).map((a) => {
+                const on = specialties.includes(a.key)
+                return (
+                  <button type="button" key={a.key} className={`chip-btn${on ? ' on' : ''}`} aria-pressed={on}
+                    onClick={() => setSpecialties(on ? specialties.filter((s) => s !== a.key) : [...specialties, a.key])}>
+                    {a.label}
+                  </button>
+                )
+              })}
+            </div>
+            {specialtiesError
+              ? <div className="field-error" role="alert">{specialtiesError}</div>
+              : <div className="field-hint">The app matches these to what clients want to focus on.</div>}
+          </div>
+        </div>
         <Field label="Timezone" error={err('timezone')} hint="Weekly hours use this timezone.">
           {(id) => <Select id={id} value={timezone} onChange={(e) => setTimezone(e.target.value)}>{zones.map((z) => <option key={z} value={z}>{z.replace('_', ' ')}</option>)}</Select>}
         </Field>

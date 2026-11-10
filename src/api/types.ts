@@ -62,6 +62,9 @@ export interface Booking {
   priceCents: number
   currency: string
   notes: string | null
+  /** What the client wants to focus on (their therapist only). */
+  focus: FocusArea[]
+  clientMobile: string | null
   payment: { status: string; amountCents: number; refundedCents: number } | null
   canCancel: boolean
   canMarkOutcome: boolean
@@ -166,4 +169,10 @@ export interface EmailStatus {
     lastFailedAt: string | null
     lastError: string | null
   }
+}
+
+/** Focus areas: therapist specialties and the app's booking focus (GET /v1/focus-areas). */
+export interface FocusArea {
+  key: string
+  label: string
 }

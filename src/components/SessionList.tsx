@@ -45,6 +45,8 @@ export default function SessionList({ bookings, showTherapist, emptyText }: { bo
                 {b.payment && b.payment.refundedCents > 0 && <> · refunded {fmtMoney(b.payment.refundedCents, b.currency)}</>}
                 {' · '}{b.client.email}
               </div>
+              {b.focus?.length > 0 && <div className="chips" style={{ marginTop: 8 }}>{b.focus.map((f) => <span className="chip" key={f.key}>{f.label}</span>)}</div>}
+              {b.clientMobile && <div className="sub">{b.clientMobile}</div>}
               {b.notes && <div className="note-box"><b>Client note:</b> {b.notes}</div>}
             </div>
             <div className="session-actions">

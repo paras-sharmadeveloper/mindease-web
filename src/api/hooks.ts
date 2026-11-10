@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { del, get, patch, post, put } from './client'
-import type { EmailStatus, Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
+import type { EmailStatus, FocusArea, Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
 
 export type BookingScope = 'upcoming' | 'past' | 'all'
 
@@ -14,6 +14,9 @@ export const useBookings = (scope: BookingScope, therapistId?: string) =>
   })
 
 export const useBooking = (id: string) => useQuery({ queryKey: ['booking', id], queryFn: () => get<Booking>(`/panel/bookings/${id}`) })
+
+export const useFocusAreas = () =>
+  useQuery({ queryKey: ['focus-areas'], queryFn: () => get<FocusArea[]>('/focus-areas'), staleTime: Infinity })
 
 export const useTherapists = (enabled = true) =>
   useQuery({ queryKey: ['therapists'], queryFn: () => get<Therapist[]>('/panel/therapists'), enabled })
