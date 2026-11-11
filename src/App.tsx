@@ -5,6 +5,7 @@ import Layout from './components/Layout'
 import { Spinner } from './components/ui'
 import Account from './pages/Account'
 import Dashboard from './pages/Dashboard'
+import ForgotPassword from './pages/ForgotPassword'
 import Login from './pages/Login'
 import ProgramDetail from './pages/ProgramDetail'
 import Programs from './pages/Programs'
@@ -20,7 +21,14 @@ export default function App() {
   const { me, loading } = useAuth()
 
   if (loading) return <div style={{ display: 'grid', placeItems: 'center', height: '100%' }}><Spinner /></div>
-  if (!me) return <Routes><Route path="*" element={<Login />} /></Routes>
+  if (!me) {
+    return (
+      <Routes>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="*" element={<Login />} />
+      </Routes>
+    )
+  }
 
   return (
     <Routes>
