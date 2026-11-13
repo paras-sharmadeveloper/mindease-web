@@ -70,6 +70,8 @@ export interface Booking {
   canCancel: boolean
   canMarkOutcome: boolean
   canJoin: boolean
+  /** Therapist only, cancelled sessions: can remove it from their own list (the record is kept). */
+  canDelete: boolean
   joinOpensAt: string | null
   createdAt: string
 }

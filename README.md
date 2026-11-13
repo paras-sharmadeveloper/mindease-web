@@ -5,7 +5,7 @@ React panel for MindEase **therapists** and **admins**. It talks to the Laravel 
 | Role | Can do |
 |---|---|
 | Admin | Add therapists (with a temporary password), edit any profile, set prices, show or hide therapists in the app, reset passwords, see all sessions, cancel sessions, manage programs (show/hide, details, content JSON, add), edit the onboarding questionnaire, and check email delivery (Account → Email delivery: settings, stuck or failed emails, send a test email) |
-| Therapist | Edit own profile, set weekly hours and time off, see own sessions and client notes, join video calls (Zoom Video SDK, host), mark sessions completed or no-show, cancel sessions (full refund) |
+| Therapist | Edit own profile, set weekly hours and time off, see own sessions and client notes, join video calls (Zoom Video SDK, host), mark sessions completed or no-show, cancel sessions (full refund), delete cancelled sessions from their list (the booking and payment record are kept; admins and the client still see it) |
 
 Admins can't join calls or read client notes.
 

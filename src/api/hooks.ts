@@ -40,6 +40,17 @@ export function useBookingAction() {
   })
 }
 
+/** Therapist: remove cancelled sessions from their own list (the bookings themselves are kept). */
+export function useDeleteBookings() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      for (const id of ids) await del<null>(`/panel/bookings/${id}`)
+    },
+    onSuccess: () => invalidate('bookings', 'booking', 'dashboard'),
+  })
+}
+
 export interface TherapistInput {
   name?: string
   email?: string

@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useBookings, useDashboard } from '../api/hooks'
 import { useMe } from '../auth/AuthContext'
-import { Calendar, Check, Clock, Cross, Plus, Users } from '../components/icons'
+import { Calendar, Check, Clock, Cross, Plus, Users, Video } from '../components/icons'
 import SessionList from '../components/SessionList'
-import { Card, ErrorBanner, Hero, Spinner } from '../components/ui'
-import { localZone } from '../lib/format'
+import type { Booking } from '../api/types'
+import { Button, Card, ErrorBanner, Hero, Spinner } from '../components/ui'
+import { useNow } from '../lib/useNow'
+import { fmtDate, fmtTime, localZone, relative } from '../lib/format'
 
 export default function Dashboard() {
   const me = useMe()
@@ -40,18 +42,45 @@ export default function Dashboard() {
           </div>
         )}
 
-        <Card title="Up next" actions={<Link className="btn btn-secondary btn-sm" to="/sessions">See all sessions</Link>}>
+        {!isAdmin && upcoming.data?.[0] && <NextSession booking={upcoming.data[0]} />}
+
+        {(isAdmin || !upcoming.data?.[0] || upcoming.data.length > 1) && (
+        <Card title={isAdmin ? 'Up next' : upcoming.data?.[0] ? 'Later' : 'Up next'} actions={<Link className="btn btn-secondary btn-sm" to="/sessions">See all sessions</Link>}>
           {upcoming.isLoading ? <Spinner /> : <ErrorBanner error={upcoming.error} />}
           {upcoming.data && (
             <SessionList
-              bookings={upcoming.data.slice(0, 5)}
+              bookings={isAdmin ? upcoming.data.slice(0, 5) : upcoming.data.slice(1, 6)}
               showTherapist={isAdmin}
               emptyText={isAdmin ? 'No confirmed sessions are coming up.' : 'When clients book you in the app, their sessions show up here.'}
             />
           )}
         </Card>
+        )}
       </div>
     </>
+  )
+}
+
+/** Therapist home: the very next session, big, with the Join button. */
+function NextSession({ booking: b }: { booking: Booking }) {
+  const navigate = useNavigate()
+  const now = useNow(30_000)
+  const joinOpen = b.canJoin && b.joinOpensAt && now >= new Date(b.joinOpensAt).getTime() && now < new Date(b.endsAt).getTime()
+  const live = now >= new Date(b.startsAt).getTime() && now < new Date(b.endsAt).getTime()
+  return (
+    <section className={`next-session ${live ? 'live' : ''}`}>
+      <div className="next-info">
+        <span className="eyebrow">{live ? 'Happening now' : 'Your next session'}</span>
+        <h2>{b.client.name}</h2>
+        <p>{fmtDate(b.startsAt)} · {fmtTime(b.startsAt)} – {fmtTime(b.endsAt)}{!live && <> · <b>{relative(b.startsAt)}</b></>}</p>
+        {b.focus?.length > 0 && <div className="chips">{b.focus.map((f) => <span className="chip" key={f.key}>{f.label}</span>)}</div>}
+      </div>
+      {b.canJoin && (
+        <Button size="lg" className="btn-light" disabled={!joinOpen} onClick={() => navigate(`/call/${b.id}`)}>
+          <Video size={20} />{joinOpen ? 'Join call' : `Join opens ${fmtTime(b.joinOpensAt!)}`}
+        </Button>
+      )}
+    </section>
   )
 }
 

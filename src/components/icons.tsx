@@ -36,4 +36,8 @@ export const ArrowUp = (p: P) => <Svg {...p}><path d="M12 19V5M6 11l6-6 6 6" /><
 export const ArrowDown = (p: P) => <Svg {...p}><path d="M12 5v14M6 13l6 6 6-6" /></Svg>
 export const Trash = (p: P) => <Svg {...p}><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5M14 11v5" /></Svg>
 export const Search = (p: P) => <Svg {...p}><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></Svg>
+export const Mail = (p: P) => <Svg {...p}><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M4 7l8 6 8-6" /></Svg>
+export const Smartphone = (p: P) => <Svg {...p}><rect x="7" y="3" width="10" height="18" rx="2.5" /><path d="M11 17.5h2" /></Svg>
+export const Wallet = (p: P) => <Svg {...p}><path d="M4 7.5A2.5 2.5 0 016.5 5H18v4" /><rect x="4" y="7.5" width="16" height="12" rx="2.5" /><path d="M16 13.5h1.5" /></Svg>
+export const Note = (p: P) => <Svg {...p}><path d="M6 4h9l4 4v12H6z" /><path d="M14.5 4v4.5H19M9 13h6M9 16.5h4" /></Svg>
 export const Ban = (p: P) => <Svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="M6 6l12 12" /></Svg>
