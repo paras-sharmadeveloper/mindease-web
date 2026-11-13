@@ -241,6 +241,12 @@ td .sub { display: block; color: var(--grey60); font-size: 13px; }
 .note-box svg { flex: none; margin-top: 2px; color: var(--grey60); }
 .note-box b { display: block; color: var(--brown); font-size: 12.5px; text-transform: uppercase; letter-spacing: .6px; }
 
+/* Type-to-confirm delete popup */
+.confirm-type { margin-top: 14px; padding: 14px 16px; border-radius: 18px; background: var(--red-tint); border: 1.5px solid var(--red-soft); }
+.confirm-type label { display: block; font-weight: 800; font-size: 14px; color: var(--red-deep); margin-bottom: 8px; }
+.confirm-type label b { letter-spacing: 1px; }
+.confirm-type .input { height: 48px; letter-spacing: 1px; font-weight: 800; }
+
 /* Therapist home: next session */
 .next-session { position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; padding: 24px 26px; border-radius: var(--r-card); background: var(--brown); color: var(--white); box-shadow: var(--shadow); }
 .next-session::after { content: ''; position: absolute; width: 260px; height: 260px; border-radius: 50%; right: -70px; top: -120px; background: rgba(255, 255, 255, .06); pointer-events: none; }

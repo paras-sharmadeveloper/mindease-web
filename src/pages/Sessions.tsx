@@ -3,8 +3,9 @@ import { useBookings, useDeleteBookings, useTherapists, type BookingScope } from
 import type { BookingStatus } from '../api/types'
 import { useMe } from '../auth/AuthContext'
 import { Search, Trash } from '../components/icons'
+import ConfirmDelete from '../components/ConfirmDelete'
 import SessionList from '../components/SessionList'
-import { Button, Card, ErrorBanner, Hero, Modal, Select, Spinner, Tabs } from '../components/ui'
+import { Button, Card, ErrorBanner, Hero, Select, Spinner, Tabs } from '../components/ui'
 
 type StatusFilter = 'any' | Exclude<BookingStatus, 'pending'>
 
@@ -85,17 +86,16 @@ export default function Sessions() {
         </Card>
       </div>
 
-      <Modal
+      <ConfirmDelete
         open={clearing}
         title={`Delete ${deletable.length} cancelled sessions?`}
+        confirmLabel={`Delete ${deletable.length}`}
+        loading={remove.isPending}
         onClose={() => setClearing(false)}
-        footer={<>
-          <Button variant="secondary" onClick={() => setClearing(false)}>Keep them</Button>
-          <Button loading={remove.isPending} onClick={() => remove.mutate(deletable.map((b) => b.id), { onSuccess: () => setClearing(false) })}><Trash size={16} />Delete all</Button>
-        </>}
+        onConfirm={() => remove.mutate(deletable.map((b) => b.id), { onSuccess: () => setClearing(false) })}
       >
-        <p>They're removed from your list. The payment and refund records are kept, and clients still see them in their app history.</p>
-      </Modal>
+        <p>They're removed from your list for good. The payment and refund records are kept, and clients still see them in their app history.</p>
+      </ConfirmDelete>
     </>
   )
 }

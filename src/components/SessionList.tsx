@@ -5,6 +5,7 @@ import type { Booking } from '../api/types'
 import { fmtDate, fmtMoney, fmtTime, relative } from '../lib/format'
 import { useNow } from '../lib/useNow'
 import { Ban, Check, Clock, Mail, Note, Smartphone, Trash, Video, Wallet } from './icons'
+import ConfirmDelete from './ConfirmDelete'
 import { Button, Empty, ErrorBanner, Modal, Pill, StatusBadge } from './ui'
 
 /** "Today", "Tomorrow", "Yesterday" or "Mon 17 Nov 2026", in the viewer's timezone. */
@@ -133,22 +134,20 @@ export default function SessionList({ bookings, showTherapist, emptyText, groupe
         )}
       </Modal>
 
-      <Modal
+      <ConfirmDelete
         open={!!deleting}
         title="Delete this session?"
+        loading={remove.isPending}
         onClose={() => setDeleting(null)}
-        footer={<>
-          <Button variant="secondary" onClick={() => setDeleting(null)}>Keep it</Button>
-          <Button loading={remove.isPending} onClick={() => deleting && remove.mutate([deleting.id], { onSuccess: () => setDeleting(null) })}><Trash size={16} />Delete</Button>
-        </>}
+        onConfirm={() => deleting && remove.mutate([deleting.id], { onSuccess: () => setDeleting(null) })}
       >
         {deleting && (
           <p>
-            The cancelled session with <b>{deleting.client.name}</b> on <b>{fmtDate(deleting.startsAt)}</b> will be removed from your list.
-            The payment and refund record is kept, and the client still sees it in their app history.
+            The cancelled session with <b>{deleting.client.name}</b> on <b>{fmtDate(deleting.startsAt)}</b> will be removed from your list
+            for good. The payment and refund record is kept, and the client still sees it in their app history.
           </p>
         )}
-      </Modal>
+      </ConfirmDelete>
     </>
   )
 }
