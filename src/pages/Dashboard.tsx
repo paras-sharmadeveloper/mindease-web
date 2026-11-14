@@ -33,14 +33,15 @@ export default function Dashboard() {
               : <Stat icon={<Cross />} tone="purple" value={stats.data.cancelledLast30Days} label="Cancelled in 30 days" />}
           </div>
         )}
-        {stats.data && isAdmin && (
+        {stats.data && isAdmin && (<>
           <div className="stats">
             <Stat icon={<Users />} tone="green" value={stats.data.totalUsers ?? 0} label="Total app sign-ups" />
             <Stat icon={<Plus />} tone="red" value={stats.data.newUsersLast24Hours ?? 0} label="New in 24 hours" />
             <Stat icon={<Plus />} tone="yellow" value={stats.data.newUsersLast7Days ?? 0} label="New in 7 days" />
             <Stat icon={<Plus />} tone="purple" value={stats.data.newUsersLast30Days ?? 0} label="New in 30 days" />
           </div>
-        )}
+          <div className="stats-link"><Link className="btn btn-secondary btn-sm" to="/users">See all sign-ups</Link></div>
+        </>)}
 
         {!isAdmin && upcoming.data?.[0] && <NextSession booking={upcoming.data[0]} />}
 

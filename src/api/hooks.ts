@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { del, get, patch, post, put } from './client'
-import type { EmailStatus, FocusArea, Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
+import type { AppUserPage, SignupPeriod, EmailStatus, FocusArea, Availability, AvailabilityWindow, Booking, Dashboard, ProgramContent, ProgramDetail, ProgramStatus, ProgramSummary, Question, Questionnaire, Therapist, VideoToken } from './types'
 
 export type BookingScope = 'upcoming' | 'past' | 'all'
 
@@ -11,6 +11,14 @@ export const useBookings = (scope: BookingScope, therapistId?: string) =>
     queryKey: ['bookings', scope, therapistId ?? null],
     queryFn: () => get<Booking[]>(`/panel/bookings?${new URLSearchParams({ scope, ...(therapistId ? { therapistId } : {}) })}`),
     refetchInterval: scope === 'upcoming' ? 60_000 : false, // join buttons open on time
+  })
+
+/** Admin: app sign-ups, newest first, 25 per page. */
+export const useAppUsers = (q: string, period: SignupPeriod, page: number) =>
+  useQuery({
+    queryKey: ['app-users', q, period, page],
+    queryFn: () => get<AppUserPage>(`/panel/users?${new URLSearchParams({ q, period, page: String(page) })}`),
+    placeholderData: keepPreviousData,
   })
 
 export const useBooking = (id: string) => useQuery({ queryKey: ['booking', id], queryFn: () => get<Booking>(`/panel/bookings/${id}`) })

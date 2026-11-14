@@ -412,3 +412,10 @@ td .sub { display: block; color: var(--grey60); font-size: 13px; }
 
 /* Small logo on the red mobile top bar: white tile keeps the colours clear */
 .logo-sm { width: 34px; height: 34px; background: var(--white); border-radius: 11px; padding: 4px; }
+
+/* Sign-ups list */
+img.avatar { object-fit: cover; }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.pager-buttons { display: flex; gap: 8px; }
+.stats-link { display: flex; justify-content: flex-end; margin: -6px 0 18px; }
+td.nowrap { white-space: nowrap; }

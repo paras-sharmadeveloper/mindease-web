@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth, useMe } from '../auth/AuthContext'
-import { Calendar, Edit, Home, LogOut, Menu, Settings, Users } from './icons'
+import { Calendar, Edit, Home, LogOut, Menu, Settings, UserPlus, Users } from './icons'
 
 export default function Layout() {
   const me = useMe()
@@ -14,6 +14,7 @@ export default function Layout() {
     { to: '/sessions', label: 'Sessions', icon: <Calendar /> },
     ...(isAdmin ? [
       { to: '/therapists', label: 'Therapists', icon: <Users /> },
+      { to: '/users', label: 'App sign-ups', icon: <UserPlus /> },
       // Programs (/programs) and Questionnaire (/questionnaire) are hidden from the menu for now.
       // The pages still work for admins who open the link directly.
     ] : []),

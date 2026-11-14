@@ -183,3 +183,31 @@ export interface FocusArea {
 /** Specialty keys, whichever shape the API sent. */
 export const specialtyKeys = (list: (FocusArea | string)[] | null | undefined): string[] =>
   (list ?? []).map((s) => (typeof s === 'string' ? s : s.key))
+
+/** An app account in the admin sign-ups list. */
+export interface AppUser {
+  id: string
+  name: string
+  email: string
+  mobile: string | null
+  photoUrl: string | null
+  emailVerified: boolean
+  signedUpAt: string
+  lastActiveAt: string | null
+  questionnaireCompleted: boolean
+  bookings: number
+  sessionsCompleted: number
+  phasesCompleted: number
+  points: number
+}
+
+export type SignupPeriod = 'all' | '24h' | '7d' | '30d'
+
+export interface AppUserPage {
+  data: AppUser[]
+  page: number
+  perPage: number
+  lastPage: number
+  total: number
+  counts: { all: number; last24Hours: number; last7Days: number; last30Days: number }
+}

@@ -78,7 +78,7 @@ VITE_PREVIEW_PASSWORD_SHA256=<hash> VITE_API_URL=https://api.mindease.me/v1 npm 
 src/api/client.ts       fetch wrapper: bearer token, single-flight refresh, ApiError
 src/api/hooks.ts        React Query hooks for every panel endpoint
 src/auth/AuthContext    sign in -> /panel/me (app users are rejected), session restore
-src/pages/              Dashboard, Sessions, Therapists, TherapistDetail, Programs, ProgramDetail, Questionnaire, Account, Call
+src/pages/              Dashboard, Sessions, Therapists, TherapistDetail, Users (app sign-ups), Programs, ProgramDetail, Questionnaire, Account, Call
 src/components/         Layout, SessionList, TherapistForm, AvailabilityEditor, ui
 ```
 

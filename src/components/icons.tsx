@@ -41,3 +41,4 @@ export const Smartphone = (p: P) => <Svg {...p}><rect x="7" y="3" width="10" hei
 export const Wallet = (p: P) => <Svg {...p}><path d="M4 7.5A2.5 2.5 0 016.5 5H18v4" /><rect x="4" y="7.5" width="16" height="12" rx="2.5" /><path d="M16 13.5h1.5" /></Svg>
 export const Note = (p: P) => <Svg {...p}><path d="M6 4h9l4 4v12H6z" /><path d="M14.5 4v4.5H19M9 13h6M9 16.5h4" /></Svg>
 export const Ban = (p: P) => <Svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="M6 6l12 12" /></Svg>
+export const UserPlus = (p: P) => <Svg {...p}><circle cx="10" cy="8" r="3.5" /><path d="M3.5 20a6.5 6.5 0 0113 0M19 8v6M16 11h6" /></Svg>

@@ -13,6 +13,7 @@ import QuestionnaireEditor from './pages/Questionnaire'
 import Sessions from './pages/Sessions'
 import TherapistDetail from './pages/TherapistDetail'
 import Therapists from './pages/Therapists'
+import Users from './pages/Users'
 
 // The Zoom Video SDK is large: load it only when a call is opened.
 const Call = lazy(() => import('./pages/Call'))
@@ -37,6 +38,7 @@ export default function App() {
         <Route index element={<Dashboard />} />
         <Route path="sessions" element={<Sessions />} />
         {me.role === 'admin' && <Route path="therapists" element={<Therapists />} />}
+        {me.role === 'admin' && <Route path="users" element={<Users />} />}
         {me.role === 'admin' && <Route path="programs" element={<Programs />} />}
         {me.role === 'admin' && <Route path="programs/:id" element={<ProgramDetail />} />}
         {me.role === 'admin' && <Route path="questionnaire" element={<QuestionnaireEditor />} />}
