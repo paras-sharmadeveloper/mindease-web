@@ -55,7 +55,11 @@ export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' 
 export interface Booking {
   id: string
   status: BookingStatus
+  /** user | therapist | expired | replaced | payment_failed */
   cancelReason: string | null
+  /** Plain-English version of cancelReason, worded for the viewer. */
+  cancelReasonLabel: string | null
+  cancelledAt: string | null
   startsAt: string
   endsAt: string
   client: { name: string; email: string }
@@ -72,6 +76,8 @@ export interface Booking {
   canJoin: boolean
   /** Therapist only, cancelled sessions: can remove it from their own list (the record is kept). */
   canDelete: boolean
+  /** Paid in the app but not confirmed (no Stripe webhook): ask Stripe with POST /panel/bookings/{id}/check-payment. */
+  canCheckPayment: boolean
   joinOpensAt: string | null
   createdAt: string
 }

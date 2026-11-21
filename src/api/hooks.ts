@@ -48,6 +48,15 @@ export function useBookingAction() {
   })
 }
 
+/** Ask Stripe whether the client paid; confirms the session if so. */
+export function useCheckPayment() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: (id: string) => post<Booking>(`/panel/bookings/${id}/check-payment`),
+    onSettled: () => invalidate('bookings', 'booking', 'dashboard'),
+  })
+}
+
 /** Therapist: remove cancelled sessions from their own list (the bookings themselves are kept). */
 export function useDeleteBookings() {
   const invalidate = useInvalidate()

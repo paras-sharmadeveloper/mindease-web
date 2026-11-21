@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useBookingAction, useDeleteBookings } from '../api/hooks'
+import { useBookingAction, useCheckPayment, useDeleteBookings } from '../api/hooks'
 import type { Booking } from '../api/types'
 import { fmtDate, fmtMoney, fmtTime, relative } from '../lib/format'
 import { useNow } from '../lib/useNow'
@@ -27,6 +27,7 @@ export default function SessionList({ bookings, showTherapist, emptyText, groupe
   const [deleting, setDeleting] = useState<Booking | null>(null)
   const action = useBookingAction()
   const remove = useDeleteBookings()
+  const check = useCheckPayment()
   const navigate = useNavigate()
   const now = useNow(30_000)
 
@@ -43,7 +44,7 @@ export default function SessionList({ bookings, showTherapist, emptyText, groupe
 
   return (
     <>
-      <ErrorBanner error={action.error ?? remove.error} />
+      <ErrorBanner error={action.error ?? remove.error ?? check.error} />
       <div className="session-groups">
         {groups.map((g) => (
           <section key={g.label + g.items[0]!.id} className="session-group">
@@ -86,9 +87,16 @@ export default function SessionList({ bookings, showTherapist, emptyText, groupe
 
                       {b.focus?.length > 0 && <div className="chips">{b.focus.map((f) => <span className="chip" key={f.key}>{f.label}</span>)}</div>}
                       {b.notes && <div className="note-box"><Note size={16} /><span><b>Client note</b>{b.notes}</span></div>}
-                      {b.status === 'cancelled' && b.cancelReason && <div className="small muted">Cancelled{b.cancelReason === 'therapist' ? ' by you' : b.cancelReason === 'user' ? ' by the client' : ''}.</div>}
+                      {b.status === 'cancelled' && b.cancelReason && (
+                        <div className="small muted">
+                          {b.cancelReasonLabel ?? `Cancelled (${b.cancelReason}).`}
+                          {b.cancelledAt && <> · {fmtDate(b.cancelledAt)} at {fmtTime(b.cancelledAt)}</>}
+                          {b.payment && <> · Payment: {b.payment.status.replace(/_/g, ' ')}</>}
+                          {b.canCheckPayment && ' · If the client paid in the app, use "Check payment".'}
+                        </div>
+                      )}
 
-                      {(b.canJoin && b.status === 'confirmed') || b.canMarkOutcome || b.canCancel || b.canDelete ? (
+                      {(b.canJoin && b.status === 'confirmed') || b.canMarkOutcome || b.canCancel || b.canDelete || b.canCheckPayment ? (
                         <div className="session-actions">
                           {b.canJoin && b.status === 'confirmed' && (
                             <Button size="sm" disabled={!joinOpen} title={joinOpen ? '' : `Opens ${b.joinOpensAt ? relative(b.joinOpensAt) : ''}`} onClick={() => navigate(`/call/${b.id}`)}>
@@ -100,6 +108,9 @@ export default function SessionList({ bookings, showTherapist, emptyText, groupe
                           )}
                           {b.canMarkOutcome && b.status !== 'no_show' && (
                             <Button variant="secondary" size="sm" loading={action.isPending} onClick={() => action.mutate({ id: b.id, action: 'outcome', status: 'no_show' })}><Ban size={15} />No-show</Button>
+                          )}
+                          {b.canCheckPayment && (
+                            <Button variant="secondary" size="sm" loading={check.isPending && check.variables === b.id} onClick={() => check.mutate(b.id)}><Wallet size={15} />Check payment</Button>
                           )}
                           {b.canCancel && <Button variant="danger" size="sm" onClick={() => setCancelling(b)}>Cancel session</Button>}
                           {b.canDelete && <Button variant="ghost" size="sm" onClick={() => setDeleting(b)}><Trash size={15} />Delete</Button>}
