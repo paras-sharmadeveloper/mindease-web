@@ -78,6 +78,8 @@ export interface Booking {
   canDelete: boolean
   /** Paid in the app but not confirmed (no Stripe webhook): ask Stripe with POST /panel/bookings/{id}/check-payment. */
   canCheckPayment: boolean
+  /** From the Zoom webhook; null until a call happens. */
+  video: { startedAt: string; endedAt: string | null; durationSeconds: number | null; clientJoined: boolean; therapistJoined: boolean } | null
   joinOpensAt: string | null
   createdAt: string
 }

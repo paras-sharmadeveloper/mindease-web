@@ -87,6 +87,12 @@ export default function SessionList({ bookings, showTherapist, emptyText, groupe
 
                       {b.focus?.length > 0 && <div className="chips">{b.focus.map((f) => <span className="chip" key={f.key}>{f.label}</span>)}</div>}
                       {b.notes && <div className="note-box"><Note size={16} /><span><b>Client note</b>{b.notes}</span></div>}
+                      {b.video && (
+                        <div className="small muted">
+                          Video call: {b.video.endedAt && b.video.durationSeconds != null ? `${Math.round(b.video.durationSeconds / 60)} min` : 'in progress'}
+                          {!b.video.clientJoined && ' · client did not join'}
+                        </div>
+                      )}
                       {b.status === 'cancelled' && b.cancelReason && (
                         <div className="small muted">
                           {b.cancelReasonLabel ?? `Cancelled (${b.cancelReason}).`}
